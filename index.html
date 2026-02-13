@@ -136,7 +136,15 @@
       color: var(--gold-dark, #7f5f1f);
       opacity: .9;
     }
-
+    
+.igtag {
+  margin-top: 10px;
+  font-size: 13px;
+  color: rgba(0,0,0,.55);
+  font-weight: 700;
+  letter-spacing: .2px;
+}
+    
     .hint {
       margin-top: 10px;
       font-size: 13px;
@@ -240,6 +248,7 @@
             <div class="label" id="label">Pronto</div>
             <p class="quote" id="quote">Clique em <b>Sortear</b> para tirar uma frase ✨</p>
             <div class="author" id="author" style="display:none;"></div>
+            <div class="igtag">@clinicavitessi</div>
           </div>
         </div>
 
@@ -247,13 +256,18 @@
           <button class="btn" id="drawBtn" type="button">Sortear</button>
         </div>
 
-        <div class="btnRow">
-          <button class="mini" id="copyBtn" type="button" disabled>Copiar frase</button>
-          <button class="mini" id="againBtn" type="button" disabled>Sortear outra</button>
-        </div>
+       <div class="btnRow">
+  <button class="mini" id="copyBtn" type="button" disabled>Copiar frase</button>
+  <button class="mini" id="shareBtn" type="button" disabled>Compartilhar</button>
+  <button class="mini" id="againBtn" type="button" disabled>Sortear outra</button>
+</div>
 
         <div class="toast" id="toast">✅ Frase copiada!</div>
-        <div class="hint">Dica: use no intervalo, antes de atender ou quando o dia estiver corrido.</div>
+        <div class="hint">
+📸 Tire um print e marque @clinicavitessi<br>
+💛 Compartilhe a frase com alguém do time
+</div>
+        
         <div class="footer">Vitessi • Frases sorteadas aleatoriamente</div>
       </section>
     </div>
@@ -269,6 +283,7 @@
     const drawBtn = document.getElementById('drawBtn');
     const copyBtn = document.getElementById('copyBtn');
     const againBtn = document.getElementById('againBtn');
+    const shareBtn = document.getElementById('shareBtn');
     const toast = document.getElementById('toast');
 
     let ultima = -1;
@@ -308,6 +323,8 @@
       drawBtn.disabled = true;
       copyBtn.disabled = true;
       againBtn.disabled = true;
+      shareBtn.disabled = true;
+
 
       await embaralhar(980);
 
@@ -328,6 +345,8 @@
       drawBtn.disabled = false;
       copyBtn.disabled = false;
       againBtn.disabled = false;
+      shareBtn.disabled = false;
+
     }
 
     function copiar() {
@@ -339,6 +358,23 @@
       });
     }
 
+    function compartilhar() {
+  const frase = copyBtn.dataset.frase || '';
+  if (!frase) return;
+
+  if (navigator.share) {
+    navigator.share({
+      title: 'Frase do dia — Vitessi',
+      text: frase,
+      url: window.location.href
+    });
+  } else {
+    // Se o navegador não suportar share, copia a frase
+    copiar();
+  }
+}
+
+shareBtn.addEventListener('click', compartilhar);
     drawBtn.addEventListener('click', sortear);
     againBtn.addEventListener('click', sortear);
     copyBtn.addEventListener('click', copiar);
