@@ -233,6 +233,53 @@
       .mini { width: 100%; }
       .brand img { height: 30px; }
     }
+    /* Card de Story (9:16) */
+.storyCard {
+  width: 360px;
+  height: 640px;
+  margin: 18px auto 0;
+  border-radius: 28px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(202,162,83,.25), transparent 40%),
+    linear-gradient(180deg, #f7f2e7, #efe7d7);
+  box-shadow: 0 20px 60px rgba(0,0,0,.18);
+  display: none;
+  position: relative;
+}
+
+.storyInner {
+  padding: 34px 26px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.storyQuote {
+  font-family: Georgia, serif;
+  font-size: 26px;
+  line-height: 1.25;
+  color: #2b2b2b;
+}
+
+.storyAuthor {
+  margin-top: 16px;
+  font-size: 18px;
+  color: #7f5f1f;
+  font-weight: 600;
+}
+
+.storyTag {
+  position: absolute;
+  bottom: 24px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-weight: 800;
+  color: #9c7529;
+}
   </style>
 </head>
 <body>
@@ -255,12 +302,22 @@
         <div class="btnRow">
           <button class="btn" id="drawBtn" type="button">Sortear</button>
         </div>
-
-       <div class="btnRow">
+<!-- Card visual para Story (aparece depois do sorteio) -->
+<div id="storyCard" class="storyCard">
+  <div class="storyInner">
+    <div class="storyQuote" id="storyQuote">Sua frase aparecerá aqui</div>
+    <div class="storyAuthor" id="storyAuthor"></div>
+    <div class="storyTag">@clinicavitessi</div>
+  </div>
+</div>
+        
+   <div class="btnRow">
   <button class="mini" id="copyBtn" type="button" disabled>Copiar frase</button>
   <button class="mini" id="shareBtn" type="button" disabled>Compartilhar</button>
+  <button class="mini" id="storyBtn" type="button" disabled>Baixar story</button>
   <button class="mini" id="againBtn" type="button" disabled>Sortear outra</button>
 </div>
+
 
         <div class="toast" id="toast">✅ Frase copiada!</div>
         <div class="hint">
@@ -285,6 +342,11 @@
     const againBtn = document.getElementById('againBtn');
     const shareBtn = document.getElementById('shareBtn');
     const toast = document.getElementById('toast');
+    const storyCard = document.getElementById('storyCard');
+    const storyQuote = document.getElementById('storyQuote');
+    const storyAuthor = document.getElementById('storyAuthor');
+    const storyBtn = document.getElementById('storyBtn');
+
 
     let ultima = -1;
 
@@ -333,7 +395,12 @@
 
       label.textContent = 'Sua frase';
       quote.textContent = item.q;
-
+// Atualiza card de story
+storyQuote.textContent = item.q;
+storyAuthor.textContent = item.a ? "— " + item.a : "";
+storyCard.style.display = 'block';
+storyBtn.disabled = false;
+      
       if (item.a) {
         author.textContent = "— " + item.a;
         author.style.display = 'block';
@@ -373,12 +440,23 @@
     copiar();
   }
 }
+    
+function baixarStory() {
+  html2canvas(storyCard).then(canvas => {
+    const link = document.createElement('a');
+    link.download = 'frase-vitessi-story.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
+}
 
+storyBtn.addEventListener('click', baixarStory);
 shareBtn.addEventListener('click', compartilhar);
     drawBtn.addEventListener('click', sortear);
     againBtn.addEventListener('click', sortear);
     copyBtn.addEventListener('click', copiar);
   </script>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script data-goatcounter="https://clinicavitessi.goatcounter.com/count"
         async src="https://gc.zgo.at/count.js"></script>
 </body>
